@@ -50,6 +50,14 @@ android {
 }
 
 dependencies {
+    implementation(platform("com.aallam.openai:openai-client-bom:3.4.0"))
+
+    // define dependencies without versions
+    implementation("com.aallam.openai:openai-client")
+    runtimeOnly("io.ktor:ktor-client-okhttp")
+
+
+
     val composeBom = platform("androidx.compose:compose-bom:2023.08.00")
     implementation(composeBom)
     androidTestImplementation(composeBom)
