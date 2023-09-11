@@ -38,7 +38,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val openAI = OpenAI("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")
+        val openAI = OpenAI(BuildConfig.API_KEY)
         val chatCompletionRequest = ChatCompletionRequest(
             model = ModelId("gpt-3.5-turbo"),
             messages = listOf(
