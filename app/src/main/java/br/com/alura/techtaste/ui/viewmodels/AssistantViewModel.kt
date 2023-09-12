@@ -7,6 +7,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import br.com.alura.techtaste.BuildConfig
 import br.com.alura.techtaste.models.Message
+import br.com.alura.techtaste.models.Order
 import br.com.alura.techtaste.samples.sampleOrders
 import br.com.alura.techtaste.ui.states.AssistantUiState
 import com.aallam.openai.api.chat.ChatCompletionRequest
@@ -38,7 +39,14 @@ class AssistantViewModel : ViewModel() {
         }
     }
 
-    fun send(text: String) {
+    suspend fun send(text: String) {
+        _uiState.update {
+            it.copy(
+                messages = it.messages +
+                        Message(text, isAuthor = true)
+            )
+        }
+
         val openAI = OpenAI(BuildConfig.API_KEY)
         val chatCompletionRequest = ChatCompletionRequest(
             model = ModelId("gpt-3.5-turbo"),
@@ -49,25 +57,16 @@ class AssistantViewModel : ViewModel() {
                 ),
                 ChatMessage(
                     role = ChatRole.User,
-                    content = "me sugira uma refeição light"
+                    content = text
                 )
             )
         )
-        viewModelScope.launch {
-            openAI.chatCompletion(chatCompletionRequest)
-                .choices
-                .forEach {chatChoice ->
-                    Log.i("AssistantViewModel", "onCreate: ${chatChoice.message}")
-                }
-        }
-        _uiState.update {
-            it.copy(
-                messages = it.messages +
-                        Message(text, isAuthor = true)
-            )
-        }
-        val message = LoremIpsum(Random.nextInt(10, 50)).values.first()
-        val orders = sampleOrders.shuffled().subList(0, 2)
+        val message = openAI.chatCompletion(chatCompletionRequest)
+            .choices
+            .mapNotNull { chatChoice ->
+                chatChoice.message.content
+            }.joinToString(separator = "")
+        val orders = emptyList<Order>()
         _uiState.update { currentState ->
             currentState.copy(
                 messages = _uiState.value.messages + Message(
