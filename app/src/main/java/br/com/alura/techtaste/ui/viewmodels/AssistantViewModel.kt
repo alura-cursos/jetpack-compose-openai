@@ -1,13 +1,23 @@
 package br.com.alura.techtaste.ui.viewmodels
 
+import android.util.Log
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewModelScope
+import br.com.alura.techtaste.BuildConfig
 import br.com.alura.techtaste.models.Message
 import br.com.alura.techtaste.samples.sampleOrders
 import br.com.alura.techtaste.ui.states.AssistantUiState
+import com.aallam.openai.api.chat.ChatCompletionRequest
+import com.aallam.openai.api.chat.ChatMessage
+import com.aallam.openai.api.chat.ChatRole
+import com.aallam.openai.api.model.ModelId
+import com.aallam.openai.client.OpenAI
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import kotlin.random.Random
 
 class AssistantViewModel : ViewModel() {
@@ -29,6 +39,27 @@ class AssistantViewModel : ViewModel() {
     }
 
     fun send(text: String) {
+        val openAI = OpenAI(BuildConfig.API_KEY)
+        val chatCompletionRequest = ChatCompletionRequest(
+            model = ModelId("gpt-3.5-turbo"),
+            messages = listOf(
+                ChatMessage(
+                    role = ChatRole.System,
+                    content = "Você vai ser um assistente de restaurante"
+                ),
+                ChatMessage(
+                    role = ChatRole.User,
+                    content = "me sugira uma refeição light"
+                )
+            )
+        )
+        viewModelScope.launch {
+            openAI.chatCompletion(chatCompletionRequest)
+                .choices
+                .forEach {chatChoice ->
+                    Log.i("AssistantViewModel", "onCreate: ${chatChoice.message}")
+                }
+        }
         _uiState.update {
             it.copy(
                 messages = it.messages +

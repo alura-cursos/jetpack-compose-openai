@@ -37,29 +37,6 @@ import kotlinx.coroutines.launch
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val openAI = OpenAI(BuildConfig.API_KEY)
-        val chatCompletionRequest = ChatCompletionRequest(
-            model = ModelId("gpt-3.5-turbo"),
-            messages = listOf(
-                ChatMessage(
-                    role = ChatRole.System,
-                    content = "Você vai ser um assistente de restaurante"
-                ),
-                ChatMessage(
-                    role = ChatRole.User,
-                    content = "me sugira uma refeição light"
-                )
-            )
-        )
-        lifecycleScope.launch {
-            openAI.chatCompletion(chatCompletionRequest)
-                .choices
-                .forEach {chatChoice ->
-                    Log.i("MainActivity", "onCreate: ${chatChoice.message}")
-                }
-        }
-
         setContent {
             TechTasteTheme {
                 Surface(
