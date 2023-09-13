@@ -23,6 +23,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Send
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -122,7 +123,15 @@ fun AssistantScreen(
                                 shape = RoundedCornerShape(10.dp)
                             )
                     ) {
-                        AssistantMessage(message)
+                        when {
+                            message.isLoading -> {
+                                CircularProgressIndicator(Modifier.padding(8.dp))
+                            }
+                            else -> {
+                                AssistantMessage(message)
+                            }
+                        }
+
                     }
                 }
             }
