@@ -77,5 +77,15 @@ class AssistantViewModel : ViewModel() {
         }
     }
 
+    suspend fun retry() {
+        deleteErrorMessage()
+        _uiState.value.messages.lastOrNull()?.let { lastMessage ->
+            _uiState.update {
+                it.copy(messages = _uiState.value.messages.dropLast(1))
+            }
+            send(lastMessage.text)
+        }
+    }
+
 }
 

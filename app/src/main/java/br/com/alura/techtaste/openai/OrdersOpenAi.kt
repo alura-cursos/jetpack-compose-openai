@@ -204,7 +204,7 @@ $JSON
 """
 
 class OrdersOpenAi(
-    private val openAI: OpenAI = OpenAI("BuildConfig.API_KEY"),
+    private val openAI: OpenAI = OpenAI(BuildConfig.API_KEY),
     private val modelId: ModelId = ModelId("gpt-3.5-turbo")
 ) {
 

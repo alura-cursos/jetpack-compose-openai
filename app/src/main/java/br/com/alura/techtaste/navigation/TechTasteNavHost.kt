@@ -46,8 +46,12 @@ fun TechTasteNavHost(navController: NavHostController) {
                         viewModel.send(text)
                     }
                 },
-                onDeleteMessageClick = {viewModel.deleteErrorMessage()},
-                onRetryMessageClick = {}
+                onDeleteMessageClick = { viewModel.deleteErrorMessage() },
+                onRetryMessageClick = {
+                    scope.launch {
+                        viewModel.retry()
+                    }
+                }
             )
         }
     }
