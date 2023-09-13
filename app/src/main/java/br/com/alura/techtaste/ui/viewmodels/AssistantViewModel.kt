@@ -29,6 +29,7 @@ class AssistantViewModel : ViewModel() {
     }
 
     suspend fun send(text: String) {
+        deleteErrorMessage()
         _uiState.update {
             it.copy(
                 messages = it.messages +
@@ -63,6 +64,16 @@ class AssistantViewModel : ViewModel() {
                     isError = true
                 ))
             )
+        }
+    }
+
+    fun deleteErrorMessage() {
+        _uiState.value.messages.lastOrNull()?.let { lastMessage ->
+            if (lastMessage.isError) {
+                _uiState.update {
+                    it.copy(messages = _uiState.value.messages.dropLast(1))
+                }
+            }
         }
     }
 

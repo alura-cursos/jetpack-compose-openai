@@ -31,11 +31,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -65,6 +61,8 @@ fun AssistantScreen(
     onCloseClick: () -> Unit,
     onSendClick: (String) -> Unit,
     modifier: Modifier = Modifier,
+    onDeleteMessageClick: () -> Unit = {},
+    onRetryMessageClick: () -> Unit,
 ) {
     val messages = uiState.messages
     var text = uiState.text
@@ -130,7 +128,10 @@ fun AssistantScreen(
                             }
 
                             message.isError -> {
-                                AssistantErrorMessage(error = message.text)
+                                AssistantErrorMessage(error = message.text,
+                                    onDeleteMessageClick = onDeleteMessageClick,
+                                    onRetryMessageClick = onRetryMessageClick
+                                )
                             }
 
                             else -> {
@@ -217,6 +218,8 @@ fun AssistantScreenPreview() {
                     onCloseClick = {
                     },
                     onSendClick = {},
+                    onDeleteMessageClick = {},
+                    onRetryMessageClick = {}
                 )
             }
         }
@@ -240,6 +243,8 @@ fun AssistantScreenWithTextInTextFieldPreview() {
                     onCloseClick = {
                     },
                     onSendClick = {},
+                    onDeleteMessageClick = {},
+                    onRetryMessageClick = {}
                 )
             }
         }
