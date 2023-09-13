@@ -54,10 +54,14 @@ class AssistantViewModel : ViewModel() {
                 messages = message?.let {
                     messages + Message(
                         text = message,
-                        isAuthor = false,
                         orders = orders,
+                        isAuthor = false
                     )
-                } ?: messages
+                } ?: (messages + Message(
+                    text = "falha de comunicação",
+                    isAuthor = false,
+                    isError = true
+                ))
             )
         }
     }

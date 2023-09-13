@@ -4,5 +4,6 @@ data class Message(
     val text: String,
     val orders: List<Order> = emptyList(),
     val isAuthor: Boolean = true,
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val isError: Boolean = false
 )

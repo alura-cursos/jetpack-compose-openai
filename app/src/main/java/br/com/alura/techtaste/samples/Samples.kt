@@ -10,7 +10,6 @@ import kotlin.random.Random
 val sampleMessages = List(10) {
     Message(
         text = LoremIpsum(Random.nextInt(5, 20)).values.first(),
-        isAuthor = it % 2 == 0,
         orders = if (it % 2 != 0) listOf(
             Order(
                 name = "arroz",
@@ -22,7 +21,9 @@ val sampleMessages = List(10) {
                 description = "carioca",
                 price = BigDecimal("8.0"),
             ),
-        ) else emptyList()
+        ) else emptyList(),
+        isAuthor = it % 2 == 0,
+        isError = true
     )
 }
 

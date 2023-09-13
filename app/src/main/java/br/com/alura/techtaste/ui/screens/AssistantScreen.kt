@@ -47,6 +47,7 @@ import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.dp
 import br.com.alura.techtaste.R
 import br.com.alura.techtaste.samples.sampleMessages
+import br.com.alura.techtaste.ui.components.AssistantErrorMessage
 import br.com.alura.techtaste.ui.components.AssistantMessage
 import br.com.alura.techtaste.ui.states.AssistantUiState
 import br.com.alura.techtaste.ui.theme.Gray1
@@ -127,6 +128,11 @@ fun AssistantScreen(
                             message.isLoading -> {
                                 CircularProgressIndicator(Modifier.padding(8.dp))
                             }
+
+                            message.isError -> {
+                                AssistantErrorMessage(error = message.text)
+                            }
+
                             else -> {
                                 AssistantMessage(message)
                             }
