@@ -1,5 +1,6 @@
 package br.com.alura.techtaste.ui.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import br.com.alura.techtaste.models.Message
 import br.com.alura.techtaste.openai.OrdersOpenAi
@@ -32,24 +33,31 @@ class AssistantViewModel : ViewModel() {
             it.copy(
                 messages = it.messages +
                         Message(text, isAuthor = true) +
-                Message("", isAuthor = false, isLoading = true)
+                        Message("", isAuthor = false, isLoading = true)
             )
         }
-        val (message, orders) = ordersOpenAi.messageAndOrders(text)
+        val (message, orders) = try {
+            ordersOpenAi.messageAndOrders(text)
+        } catch (t: Throwable) {
+            Log.e("AssistantViewModel", "send: ", t)
+            Pair(null, emptyList())
+        }
         val currentMessages = _uiState.value.messages
         val lastMessage = currentMessages.last()
-        val messages = if(!lastMessage.isAuthor && lastMessage.isLoading) {
+        val messages = if (!lastMessage.isAuthor && lastMessage.isLoading) {
             currentMessages.dropLast(1)
         } else {
             currentMessages
         }
         _uiState.update { currentState ->
             currentState.copy(
-                messages = messages + Message(
-                    text = message,
-                    isAuthor = false,
-                    orders = orders,
-                )
+                messages = message?.let {
+                    messages + Message(
+                        text = message,
+                        isAuthor = false,
+                        orders = orders,
+                    )
+                } ?: messages
             )
         }
     }
