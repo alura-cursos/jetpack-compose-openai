@@ -31,13 +31,21 @@ class AssistantViewModel : ViewModel() {
         _uiState.update {
             it.copy(
                 messages = it.messages +
-                        Message(text, isAuthor = true)
+                        Message(text, isAuthor = true) +
+                Message("", isAuthor = false, isLoading = true)
             )
         }
         val (message, orders) = ordersOpenAi.messageAndOrders(text)
+        val currentMessages = _uiState.value.messages
+        val lastMessage = currentMessages.last()
+        val messages = if(!lastMessage.isAuthor && lastMessage.isLoading) {
+            currentMessages.dropLast(1)
+        } else {
+            currentMessages
+        }
         _uiState.update { currentState ->
             currentState.copy(
-                messages = _uiState.value.messages + Message(
+                messages = messages + Message(
                     text = message,
                     isAuthor = false,
                     orders = orders,
