@@ -4,6 +4,7 @@ import java.io.FileInputStream
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    kotlin("plugin.serialization") version "1.9.10"
 }
 
 val file = rootProject.file("apikey.properties")
@@ -69,7 +70,7 @@ dependencies {
     // define dependencies without versions
     implementation("com.aallam.openai:openai-client")
     runtimeOnly("io.ktor:ktor-client-okhttp")
-
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
 
 
     val composeBom = platform("androidx.compose:compose-bom:2023.08.00")

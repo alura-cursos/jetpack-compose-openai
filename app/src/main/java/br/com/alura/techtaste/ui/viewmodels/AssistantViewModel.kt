@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
 import kotlin.random.Random
 
 private const val JSON = """
@@ -253,11 +254,17 @@ class AssistantViewModel : ViewModel() {
                 )
             )
         )
-        val message = openAI.chatCompletion(chatCompletionRequest)
+        val openAiResult = openAI.chatCompletion(chatCompletionRequest)
             .choices
             .mapNotNull { chatChoice ->
                 chatChoice.message.content
             }.joinToString(separator = "")
+        val jsonPattern = "\\{.*\\}".toRegex()
+        val matchResult = jsonPattern.find(openAiResult)
+        matchResult?.value?.let { rawJson ->
+            val json = Json { ignoreUnknownKeys = true }
+            json.decodeFromString<>(rawJson)
+        }
         val orders = emptyList<Order>()
         _uiState.update { currentState ->
             currentState.copy(
@@ -271,5 +278,3 @@ class AssistantViewModel : ViewModel() {
     }
 
 }
-
-
