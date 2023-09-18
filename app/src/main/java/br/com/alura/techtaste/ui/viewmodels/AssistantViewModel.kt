@@ -19,7 +19,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import java.math.BigDecimal
 import kotlin.random.Random
 
 private const val JSON = """
@@ -259,13 +261,18 @@ class AssistantViewModel : ViewModel() {
             .mapNotNull { chatChoice ->
                 chatChoice.message.content
             }.joinToString(separator = "")
-        val jsonPattern = "\\{.*\\}".toRegex()
+        val jsonPattern = "\\{.*\\}".toRegex(RegexOption.DOT_MATCHES_ALL)
         val matchResult = jsonPattern.find(openAiResult)
-        matchResult?.value?.let { rawJson ->
+        val (message, orders) = matchResult?.value?.let { rawJson ->
             val json = Json { ignoreUnknownKeys = true }
-            json.decodeFromString<>(rawJson)
-        }
-        val orders = emptyList<Order>()
+            val orders = json.decodeFromString<OrderResult>(rawJson)
+                .orders
+                .map {
+                    it.toOrder()
+                }
+            val message = openAiResult.substringBefore(rawJson)
+            Pair(message, orders)
+        } ?: Pair(openAiResult, emptyList())
         _uiState.update { currentState ->
             currentState.copy(
                 messages = _uiState.value.messages + Message(
@@ -277,4 +284,22 @@ class AssistantViewModel : ViewModel() {
         }
     }
 
+}
+
+@Serializable
+class OrderResult(
+    val orders: List<OrderDto>
+)
+
+@Serializable
+class OrderDto(
+    val name: String,
+    val description: String,
+    val price: String
+) {
+    fun toOrder() = Order(
+        name = name,
+        description = description,
+        price = BigDecimal(price)
+    )
 }
