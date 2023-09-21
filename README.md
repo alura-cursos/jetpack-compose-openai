@@ -1,11 +1,15 @@
 ## Tech Taste
 
+![Banner principal](https://github.com/alura-cursos/jetpack-compose-openai/assets/8989346/5ea2d40c-b84e-4d6e-b527-8984d6595cce)
+
 ## 🔨 Funcionalidades do projeto
 
 App de restaurante que oferece um assistente para ajudar as pessoas a fazerem pedidos
 
 - `Início`: Exibe categorias e algumas sugestões de refeições
 - `Assistente`: Chat que permite enviar mensagens e receber uma resposta da Open AI.
+
+![App Tech Taste em execução](https://github.com/alura-cursos/jetpack-compose-openai/assets/8989346/cbb91cee-520c-4eec-b911-eaac94ef5ee0)
 
 ## ✔️ Técnicas e tecnologias utilizadas
 
